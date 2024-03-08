@@ -43,23 +43,45 @@ exports.allState = async (req, res) => {
 
 
 exports.getState = async (req, res) => {
-    const { state_id } = req.params;
-    const stateQuery = "SELECT * FROM states WHERE state_id = ?";
-    const params = [state_id]
-    try {
-        const stateResults = await new Promise((resolve, reject) => {
-            database.handleDatabaseQuery(stateQuery, params, res, resolve, reject);
-        });
-         if (!stateResults || stateResults.length === 0) {
-            return res.status(404).json({ message: "state not found" });
-        }
-        let state= stateResults[0]
-        res.status(200).json({ message: "states fetched successfully", state});
-    } catch (err) {
-        console.error(err);
-        res.status(500).json({ message: "An error occurred while processing your request.", error: err.message });
-    }
+  const { state_id } = req.params;
+  const stateQuery = "SELECT * FROM states WHERE state_id = ?";
+  const teamsQuery = "SELECT * FROM teams WHERE team_creator_state_id = ?";
+  const servicesQuery = "SELECT * FROM services WHERE state_id = ?";
+
+  const params = [state_id];
+
+  try {
+      const stateResults = await new Promise((resolve, reject) => {
+          database.handleDatabaseQuery(stateQuery, params, res, resolve, reject);
+      });
+
+      if (!stateResults || stateResults.length === 0) {
+          return res.status(404).json({ message: "State not found" });
+      }
+
+      const state = stateResults[0];
+
+      // Fetch teams associated with the state
+      const teamsResults = await new Promise((resolve, reject) => {
+          database.handleDatabaseQuery(teamsQuery, params, res, resolve, reject);
+      });
+
+      // Fetch services associated with the state
+      const servicesResults = await new Promise((resolve, reject) => {
+          database.handleDatabaseQuery(servicesQuery, params, res, resolve, reject);
+      });
+
+      // Add teams and services data to the state object
+      state.teams = teamsResults;
+      state.services = servicesResults;
+
+      res.status(200).json({ message: "State fetched successfully", state });
+  } catch (err) {
+      console.error(err);
+      res.status(500).json({ message: "An error occurred while processing your request.", error: err.message });
+  }
 };
+
 
 
 exports.deleteState = async (req, res) => {

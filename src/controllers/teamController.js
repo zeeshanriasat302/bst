@@ -1,21 +1,20 @@
 const database = require("../configurations/databaseConfig");
-const { validateServiceProposal} = require("../middlewares/service")
+const { validateTeamProposal } = require("../middlewares/teams")
 
-exports.createServices = async (req, res) => {
+exports.createTeam = async (req, res) => {
     try {
-        console.log("services")
-        const { error, value } = validateServiceProposal(req.body);
+        const { error, value } = validateTeamProposal(req.body);
         if (error) {
             return res.status(400).json({ message: error.details[0].message });
         }
-        const insertQuery = "INSERT INTO services SET ?";
+        const insertQuery = "INSERT INTO teams SET ?";
         const params = [value];
         database.handleDatabaseQuery(insertQuery, params, res, (results, res) => {
             const newStateId = results.insertId;
-            const selectQuery = "SELECT * FROM services WHERE serivce_id = ?";
+            const selectQuery = "SELECT * FROM teams WHERE team_id = ?";
             const selectParams = [newStateId];
             database.handleDatabaseQuery(selectQuery, selectParams, res, (stateData, res) => {
-                res.status(201).json({ message: "services created successfully", data: stateData[0] });
+                res.status(201).json({ message: "teams created successfully", data: stateData[0] });
             });
         });
     } catch (error) {
