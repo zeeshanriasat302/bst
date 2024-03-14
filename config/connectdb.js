@@ -5,7 +5,6 @@ const connectDb = async (DATABASE_URL) => {
         const DB_OPTIONS = {
             dbName: "jwtpractice"
         }
-
         await mongoose.connect(DATABASE_URL, DB_OPTIONS)
         console.log("connected")
     } catch (error) {
