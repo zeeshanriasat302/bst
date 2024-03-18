@@ -9,12 +9,10 @@ function validateStateCreation(state) {
         regular_pricing: Joi.string().required(),
         brief_pricing: Joi.string().required(),
         initial_pricing: Joi.string().required(),
-        createdBy: Joi.string().optional(),
-        updatedBy: Joi.string().optional(),
         team: Joi.array().required(),
         services: Joi.array().required(),
-        insurance:Joi.array().required(),
-        testimonials:Joi.array().required(),
+        insurance: Joi.array().required(),
+        testimonials: Joi.array().required(),
     });
     const { error, value } = stateSchema.validate(state);
     return { error, value };

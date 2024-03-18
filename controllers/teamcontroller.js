@@ -2,14 +2,16 @@ const TeamMember = require('../models/team');
 const mongoose = require('mongoose');
 const { validateTeamCreation } = require('../validaters/teamvalidater');
 const teamMemberController = {
+
     addTeamMember: async (req, res) => {
         try {
             const { error, value } = validateTeamCreation(req.body);
             if (error) {
                 return res.status(400).json({ error: error.details[0].message })
             }
-            const { name, description, image,createdBy } = value;
-            const newTeamMember = new TeamMember({ name, description, image, createdBy});
+            const { name, description, image } = value;
+            const createdBy = req.user._id;
+            const newTeamMember = new TeamMember({ name, description, image, createdBy });
             await newTeamMember.save();
             return res.status(201).json({ message: 'Team member added successfully', teamMember: newTeamMember });
         } catch (error) {
@@ -44,7 +46,7 @@ const teamMemberController = {
             existingTeamMember.name = name;
             existingTeamMember.description = description;
             existingTeamMember.image = image;
-            existingTeamMember.updatedBy = value.updatedBy;
+            existingTeamMember.updatedBy = req.user._id;
             await existingTeamMember.save();
             return res.status(200).json({ message: 'TeamMember details updated successfully', teamMember: existingTeamMember });
         } catch (error) {

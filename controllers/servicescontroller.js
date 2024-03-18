@@ -2,6 +2,7 @@ const Service = require('../models/services');
 const mongoose = require('mongoose');
 const { validateServicesCreation } = require('../validaters/servicesvalidater');
 const servicesController = {
+
     addService: async (req, res) => {
         try {
             const { error, value } = validateServicesCreation(req.body);
@@ -12,7 +13,8 @@ const servicesController = {
             if (existingService) {
                 return res.status(400).json({ error: 'Service with this name already exists' });
             }
-            const newService = new Service({ name: value.name ,createdBy: value.createdBy});
+            const createdBy = req.user._id;
+            const newService = new Service({ name: value.name, createdBy });
             await newService.save();
             return res.status(201).json({ message: 'Service added successfully', service: newService });
         } catch (error) {
@@ -20,6 +22,7 @@ const servicesController = {
             return res.status(500).json({ error: 'Internal server error' });
         }
     },
+
     updateService: async (req, res) => {
         try {
             const { serviceId } = req.params;
@@ -42,7 +45,7 @@ const servicesController = {
                 return res.status(400).json({ error: 'Services already exists with the same name' });
             }
             existingService.name = value.name;
-            existingService.updatedBy = value.updatedBy;
+            existingService.updatedBy = req.user._id;
             await existingService.save();
             return res.status(200).json({ message: 'Service details updated successfully', service: existingService });
         } catch (error) {

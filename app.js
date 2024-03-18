@@ -15,15 +15,12 @@ const testimonialRouter = require('./routers/testimonialsrouter');
 
 app.use(cors());
 
-
 app.use('/admin', adminrouter);
 app.use('/state', stateRouter);
 app.use('/service', servicesRouter);
 app.use('/team', teamMemberRouter);
 app.use('/insurance', insuranceCompanyRouter);
 app.use('/testimonial', testimonialRouter);
-
-
 
 const DATABASE_URL = process.env.DATABASE_URL
 connectDb(DATABASE_URL)

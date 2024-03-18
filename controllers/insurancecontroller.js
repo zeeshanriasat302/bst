@@ -11,7 +11,8 @@ const insuranceCompanyController = {
             if (error) {
                 return res.status(400).json({ error: error.details[0].message });
             }
-            const { name, image, createdBy } = value;
+            const { name, image } = value;
+            const createdBy = req.user._id;
             const existingInsuranceCompany = await InsuranceCompany.findOne({ name });
             if (existingInsuranceCompany) {
                 return res.status(400).json({ error: 'insuranceCompany already exists' });
@@ -24,6 +25,7 @@ const insuranceCompanyController = {
             return res.status(500).json({ error: 'Internal server error' });
         }
     },
+
     updateInsuranceCompany: async (req, res, next) => {
         try {
             const { insuranceId } = req.params;
@@ -47,7 +49,7 @@ const insuranceCompanyController = {
             }
             existingInsuranceCompany.name = value.name;
             existingInsuranceCompany.image = value.image;
-            existingInsuranceCompany.updatedBy = value.updatedBy;
+            existingInsuranceCompany.updatedBy = req.user._id;
 
             await existingInsuranceCompany.save();
             return res.status(200).json({ message: 'Insurance company details updated successfully', insuranceCompany: existingInsuranceCompany });

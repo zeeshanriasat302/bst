@@ -20,14 +20,14 @@ const StateController = {
             if (error) {
                 return res.status(400).json({ error: error.details[0].message })
             }
-            const { name, email, phone, logo_url, createdBy, initial_pricing, regular_pricing, brief_pricing, team, services, insurance, testimonials } = value
+            const { name, email, phone, logo_url, initial_pricing, regular_pricing, brief_pricing, team, services, insurance, testimonials } = value
+            const createdBy = req.user._id;
             const existingState = await State.findOne({ name });
             if (existingState) {
                 return res.status(400).json({ message: 'State already exists' });
             }
             const newState = new State({ name, createdBy, email, phone, logo_url, initial_pricing, regular_pricing, brief_pricing });
             await newState.save();
-            //teamStateArray
             const teamStateArray = []
             const addedTeamMemberIds = new Set();
             for (let member of team) {
@@ -35,9 +35,7 @@ const StateController = {
                     return res.status(400).json({ error: `Duplicate team member ID '${member}' found` });
                 }
                 addedTeamMemberIds.add(member);
-
                 const foundMember = await TeamMember.findById(member);
-
                 if (!foundMember) {
                     res.status(404).json({ message: `memeber not found with id ${member}` });
                     return;
@@ -72,7 +70,6 @@ const StateController = {
                 serviceStateArray.push(serviceState);
             }
             const serviceStates = await ServiceState.insertMany(serviceStateArray);
-
             // Adding insurance
             const insuranceStateArray = [];
             const addedInsuranceIds = new Set();
@@ -149,11 +146,11 @@ const StateController = {
             if (isStateNameExist) {
                 return res.status(400).json({ error: 'State already exists with the same name' });
             }
-            const { name, email, phone, logo_url, initial_pricing, regular_pricing, brief_pricing, updatedBy, team, services, insurance, testimonials } = value;
+            const { name, email, phone, logo_url, initial_pricing, regular_pricing, brief_pricing, team, services, insurance, testimonials } = value;
             existingState.name = name;
             existingState.email = email;
             existingState.phone = phone;
-            existingState.updatedBy = updatedBy;
+            existingState.updatedBy = req.user._id;
             existingState.logo_url = logo_url;
             existingState.initial_pricing = initial_pricing;
             existingState.regular_pricing = regular_pricing;
@@ -271,6 +268,7 @@ const StateController = {
             return res.status(500).json({ error: 'Internal server error' });
         }
     },
+
     getAllDataByStateId: async (req, res) => {
         try {
             const { stateId } = req.params;

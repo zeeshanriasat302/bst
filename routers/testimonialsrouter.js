@@ -1,13 +1,11 @@
-// routers/testimonialRouter.js
 
 const express = require('express');
 const testimonialController = require('../controllers/testimonialscontroller');
-
 const testimonialRouter = express.Router();
+const checkAuth = require("../middleware/auth");
 
-testimonialRouter.post('/addtestimonials', testimonialController.addTestimonial);
-testimonialRouter.put('/updatetestimonial/:testimonialId', testimonialController.updateTestimonial);
-testimonialRouter.get('/alltestimonials', testimonialController.getAllTestimonials);
+testimonialRouter.post('/addtestimonials', checkAuth(), testimonialController.addTestimonial);
+testimonialRouter.put('/updatetestimonial/:testimonialId', checkAuth(), testimonialController.updateTestimonial);
+testimonialRouter.get('/alltestimonials', checkAuth(), testimonialController.getAllTestimonials);
 
-// Export the router
 module.exports = testimonialRouter;

@@ -2,9 +2,7 @@ const Joi = require('joi');
 
 function validateServicesCreation(services) {
     const servicesSchema = Joi.object({
-        name: Joi.string().required(),
-        createdBy: Joi.string().optional(),
-        updatedBy: Joi.string().optional(),
+        name: Joi.string().required()
     });
     const { error, value } = servicesSchema.validate(services);
     return { error, value };

@@ -4,13 +4,15 @@ const Testimonial = require('../models/testimonials');
 const { validateTestimonialCreation } = require('../validaters/testimonialvalidater');
 
 const testimonialController = {
+
     addTestimonial: async (req, res) => {
         try {
             const { error, value } = validateTestimonialCreation(req.body);
             if (error) {
                 return res.status(400).json({ error: error.details[0].message })
             }
-            const { name, feedback, createdBy } = value;
+            const { name, feedback, } = value;
+            const createdBy = req.user._id;
             const newTestimonial = new Testimonial({ name, feedback, createdBy });
             await newTestimonial.save();
             return res.status(201).json({ message: 'Testimonial added successfully', testimonial: newTestimonial });
@@ -19,6 +21,7 @@ const testimonialController = {
             return res.status(500).json({ error: 'Internal server error' });
         }
     },
+
     updateTestimonial: async (req, res) => {
         try {
             const { testimonialId } = req.params;
@@ -42,7 +45,7 @@ const testimonialController = {
             }
             existingTestimonial.name = value.name;
             existingTestimonial.feedback = value.feedback;
-            existingTestimonial.updatedBy = value.updatedBy;
+            existingTestimonial.updatedBy = req.user._id;
             await existingTestimonial.save();
 
             return res.status(200).json({ message: 'Testimonial details updated successfully', testimonial: existingTestimonial });
@@ -51,6 +54,7 @@ const testimonialController = {
             return res.status(500).json({ error: 'Internal server error' });
         }
     },
+
     getAllTestimonials: async (req, res) => {
         try {
             const testimonials = await Testimonial.find();
