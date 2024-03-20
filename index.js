@@ -21,6 +21,9 @@ app.use("/states", states);
 app.use("/teams", teams);
 app.use("/services", services);
 
+app.get('/', (req, res) => {
+  res.send('BST Backend');
+ });
 
 app.listen(port, () => {
   console.log(`Server is running at http://localhost:${port}`);
