@@ -2,7 +2,7 @@ const express = require('express');
 const dotenv = require('dotenv');
 dotenv.config();
 const app = express();
-const port = process.env.PORT ;
+const port = 5000 ;
 
 const bodyParser = require('body-parser');
 
@@ -26,5 +26,5 @@ app.get('/', (req, res) => {
  });
 
 app.listen(port, () => {
-  console.log(`Server is running at http://localhost:${port}`);
+  console.log(`Server is running at http://localhost:5000`);
 });
