@@ -22,6 +22,10 @@ app.use('/team', teamMemberRouter);
 app.use('/insurance', insuranceCompanyRouter);
 app.use('/testimonial', testimonialRouter);
 
+app.get('/', (req, res) => {
+    res.send('BST Backend');
+});
+
 const DATABASE_URL = process.env.DATABASE_URL
 connectDb(DATABASE_URL)
 
