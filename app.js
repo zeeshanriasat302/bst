@@ -1,7 +1,6 @@
 const express = require('express');
 require('dotenv').config();
-
-
+const bodyParser = require('body-parser');
 const app = express();
 app.use(express.json());
 const cors = require('cors');
@@ -13,6 +12,7 @@ const teamMemberRouter = require('./routers/teamrouter');
 const insuranceCompanyRouter = require('./routers/insurancerouter');
 const testimonialRouter = require('./routers/testimonialsrouter');
 
+app.use(bodyParser.json());
 app.use(cors());
 
 app.use('/admin', adminrouter);
