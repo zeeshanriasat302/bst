@@ -29,7 +29,7 @@ app.get('/', (req, res) => {
 const DATABASE_URL = process.env.DATABASE_URL
 connectDb(DATABASE_URL)
 
-const PORT = 8000;
+const PORT = 5000;
 app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);
 });
